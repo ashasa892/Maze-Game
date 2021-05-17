@@ -2,6 +2,8 @@
 #include <SDL2/SDL.h>
 
 #include "Map.h"
+#include "Components.h"
+
 
 
 #define GAME_NAME "Luffy vs Kaido" 
@@ -15,16 +17,21 @@ public:
 	~App();
 
 	void init(); //init sdl and window
+	void handleEvents();
+	void update();
+	void render();
 
 
     inline bool getQuit() const { return quit; }
     void setQuit( bool q ) { quit = q; }
 
 private:
+	Map map;
 	bool quit;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-
+	
+	
 
 
 };

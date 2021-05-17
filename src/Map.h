@@ -14,7 +14,7 @@
 
 
 struct cell{
-	bool block;
+	int block;
 };
 
 
@@ -27,6 +27,6 @@ public:
 	void draw(SDL_Renderer*); 
 
 private:
-
+	
 	cell MAZE[xsize][ysize];
 };
