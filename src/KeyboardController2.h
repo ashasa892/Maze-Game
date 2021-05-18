@@ -3,7 +3,7 @@
 #include "App.h"
 
 
-class KeyboardController : public Component
+class KeyboardController2 : public Component
 {
 public:
 	PositionComponent *pos;

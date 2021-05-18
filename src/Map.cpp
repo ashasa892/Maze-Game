@@ -22,7 +22,7 @@ void Map::generate(int seed){
 
 	for (auto x=0; x < xsize; ++x) {
 		for (auto y=0; y < ysize; ++y) {
-			MAZE[x][y].block = rand()%2;
+			MAZE[x][y].block = (rand()%7)?1:0;
 		}
 	}
 }

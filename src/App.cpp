@@ -7,6 +7,7 @@
 Map map;
 Manager manager;
 Entity* player1;
+Entity* player2;
 
 
 SDL_Event App::event;
@@ -35,7 +36,12 @@ void App::init() {
 	player1 = &(manager.addEntity());
   	player1->addComponent<PositionComponent>();
   	player1->addComponent<PlayerComponent>("../res/player1.png");
-  	player1->addComponent<KeyboardController>();
+  	player1->addComponent<KeyboardController1>();
+	
+	player2 = &(manager.addEntity());
+  	player2->addComponent<PositionComponent>();
+  	player2->addComponent<PlayerComponent>("../res/player2.png");
+  	player2->addComponent<KeyboardController2>();
 
 
 }
@@ -56,6 +62,7 @@ void App::update() {
 	manager.refresh();
 	manager.update();
 	player1->getComponent<PositionComponent>()->pos.print();
+	player2->getComponent<PositionComponent>()->pos.print();
 	
 }
 
