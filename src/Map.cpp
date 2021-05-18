@@ -27,6 +27,7 @@ void Map::generate(int seed){
 	}
 }
 
+//deprecated (use initMapTiles in App)
 void Map::render() {
 	// SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xff);
 	// SDL_RenderPresent(renderer);

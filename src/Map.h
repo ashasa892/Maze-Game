@@ -27,9 +27,10 @@ public:
 	void generate(int); // take seed as input
 	void init();	
 	void render(); 
+	cell MAZE[xsize][ysize];
 
 private:
 	SDL_Texture *wall, *path;
 	SDL_Rect srcRect, destRect;
-	cell MAZE[xsize][ysize];
+	
 };

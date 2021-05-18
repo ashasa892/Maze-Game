@@ -1,9 +1,8 @@
 #pragma once
 #include <iostream>
 #include <SDL2/SDL.h>
-
-
-
+#include <vector>
+		
 
 
 
@@ -22,6 +21,9 @@ public:
 	void handleEvents();
 	void update();
 	void render();
+	void initMapTiles();
+	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB);
+	
 
 	static SDL_Event event;
     inline bool getQuit() const { return quit; }
