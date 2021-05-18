@@ -1,9 +1,8 @@
+#pragma once
 #include <iostream>
 #include <SDL2/SDL.h>
 
-#include "Map.h"
-#include "TextureManager.h"
-#include "Components.h"
+
 
 
 
@@ -24,17 +23,17 @@ public:
 	void update();
 	void render();
 
-
+	static SDL_Event event;
     inline bool getQuit() const { return quit; }
     void setQuit( bool q ) { quit = q; }
 
 private:
-	Map map;
+	
 	bool quit;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	Manager manager;
-	Entity* player1;
+	
+	
 	
 	
 

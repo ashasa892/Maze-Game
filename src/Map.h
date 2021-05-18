@@ -1,4 +1,6 @@
+#pragma once
 #include <SDL2/SDL.h>
+#include "TextureManager.h"
 #include <iostream>
 
 
@@ -24,9 +26,10 @@ public:
 	Map();
 	void generate(int); // take seed as input
 	void init();	
-	void draw(SDL_Renderer*); 
+	void render(); 
 
 private:
-	
+	SDL_Texture *wall, *path;
+	SDL_Rect srcRect, destRect;
 	cell MAZE[xsize][ysize];
 };

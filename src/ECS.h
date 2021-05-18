@@ -55,13 +55,15 @@ public:
 		for(auto& c : components) {
 			c->update();
 		}
-		for(auto& c : components) {
-			c->render();
-		}
+		
 
 	}
 
-	void render() {}
+	void render() {
+		for(auto& c : components) {
+			c->render();
+		}
+	}
 	bool isActive() const {return active;}
 	void destroy() { active = false;}
 

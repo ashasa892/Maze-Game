@@ -1,38 +1,41 @@
+#pragma once
 #include "ECS.h"
-
+#include "Point2D.h"
 
 class PositionComponent : public Component
 {
 public:
 
+	Point2D pos, velocity;
+	int speed = 3;
+
 	PositionComponent() {
-		xpos = 0, ypos = 0;
+		pos = Point2D();
 	}
 
 	PositionComponent(int x, int y) {
-		xpos = x, ypos = y;
+		pos = Point2D(x, y);
 	}
 
-	int x() {
-		return xpos;
+	void init() override{
+		velocity = Point2D(0, 0);
+
 	}
-	int y() {return ypos;}
+
 
 	
 
 	void update() override
 	{
-		xpos++;
-		ypos++;
+		pos = pos.add(velocity.scalerMul(speed));
 	}
 
 
-	void setPos(int x, int y) {
-		xpos = x;
-		ypos = y;
+	void setPos(Point2D newPos) {
+		pos = newPos;
 	}
 
 private:
-	int xpos, ypos;
+	
 
 };

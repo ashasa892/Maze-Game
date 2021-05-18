@@ -1,3 +1,4 @@
+#pragma once
 #include "PositionComponent.h"
 #include "TextureManager.h"
 #include <SDL2/SDL.h>
@@ -19,12 +20,13 @@ public:
 		
 		srcRect.x = srcRect.y = 0;
 		srcRect.w = srcRect.h = 32;
-		destRect.w = destRect.h = 64;
+		destRect.w = destRect.h = 32;
 	}
 
 	void update() override {
-		destRect.x = position->x();
-		destRect.y = position->y();
+		destRect.x = position->pos.x;
+		destRect.y = position->pos.y;
+
 
 	}
 

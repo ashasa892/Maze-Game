@@ -8,6 +8,10 @@ void Map::init() {
 			MAZE[x][y].block = 0;
 		}
 	}
+	wall = TextureManager::loadTexture("../res/wall.png");
+	path = TextureManager::loadTexture("../res/path.png");
+	srcRect.x = srcRect.y = 0;
+	srcRect.w = srcRect.h = destRect.w = destRect.h = RATIO;
 	return;
 }
 
@@ -23,22 +27,29 @@ void Map::generate(int seed){
 	}
 }
 
-void Map::draw(SDL_Renderer* renderer) {
+void Map::render() {
 	// SDL_SetRenderDrawColor(renderer, 0, 0, 0, 0xff);
 	// SDL_RenderPresent(renderer);
+	std::cout << "ha" << std::endl;
 	for (auto x = 0; x < xsize; ++x) {
 		for (auto y = 0; y < ysize; ++y)
 		{	
-			SDL_Rect rect{ x * RATIO, y * RATIO, RATIO, RATIO};
+			destRect.x = x*RATIO, destRect.y = y*RATIO;
+			// SDL_Rect rect{ x * RATIO, y * RATIO, RATIO, RATIO};
  			if (MAZE[x][y].block)
 			{
-				SDL_SetRenderDrawColor( renderer, 255, 255, 255, 255 );
+				// path
+				TextureManager::render(path, srcRect, destRect);
+				// SDL_SetRenderDrawColor( renderer, 255, 255, 255, 255 );
+
 			}
 			else
 			{
-				SDL_SetRenderDrawColor( renderer, 255, 255, 0, 255 );
+				// wall
+				TextureManager::render(wall, srcRect, destRect);
+				// SDL_SetRenderDrawColor( renderer, 255, 255, 0, 255 );
 			}
-			SDL_RenderFillRect(renderer, &rect);
+			// SDL_RenderFillRect(renderer, &rect);
 		}
 	}
 

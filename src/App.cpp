@@ -1,7 +1,15 @@
 #include "App.h"
 
+#include "Map.h"
+#include "TextureManager.h"
+#include "Components.h"
+
+Map map;
+Manager manager;
+Entity* player1;
 
 
+SDL_Event App::event;
 
 
 // init sdl
@@ -19,24 +27,21 @@ void App::init() {
 	
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
-	
+	TextureManager::renderer = renderer;
 	map.generate(1);
 
-	// map.draw(renderer);
-	TextureManager::renderer = renderer;
+
+	
 	player1 = &(manager.addEntity());
   	player1->addComponent<PositionComponent>();
-  	player1->addComponent<PlayerComponent>("../res/cat.ico");
-  	manager.render();
-  	
-  	// SDL_RenderPresent(renderer);
-	// std:: cout << player1->getComponent<PositionComponent>().x() << " " << player1->getComponent<PositionComponent>().y() << std::endl;
+  	player1->addComponent<PlayerComponent>("../res/player1.png");
+  	player1->addComponent<KeyboardController>();
 
 
 }
 
 void App::handleEvents() {
-	SDL_Event event;
+	// SDL_Event event;
 	SDL_PollEvent(&event);
 
 	switch(event.type) {
@@ -50,11 +55,12 @@ void App::handleEvents() {
 void App::update() {
 	manager.refresh();
 	manager.update();
-	std:: cout << player1->getComponent<PositionComponent>()->x() << " " << player1->getComponent<PositionComponent>()->y() << std::endl;
+	player1->getComponent<PositionComponent>()->pos.print();
+	
 }
 
 void App::render() {
-	// map.draw(renderer);
+	map.render();
 	manager.render();
 	SDL_RenderPresent(renderer);
 }
