@@ -1,7 +1,7 @@
 #include "App.h"
 
-Manager manager;
-auto& newPlayer(manager.addEntity());	
+
+
 
 
 // init sdl
@@ -21,12 +21,16 @@ void App::init() {
 
 	
 	map.generate(1);
-	map.draw(renderer);
 
-  	newPlayer.addComponent<PositionComponent>();
-
-  	SDL_RenderPresent(renderer);
-	
+	// map.draw(renderer);
+	TextureManager::renderer = renderer;
+	player1 = &(manager.addEntity());
+  	player1->addComponent<PositionComponent>();
+  	player1->addComponent<PlayerComponent>("../res/cat.ico");
+  	manager.render();
+  	
+  	// SDL_RenderPresent(renderer);
+	// std:: cout << player1->getComponent<PositionComponent>().x() << " " << player1->getComponent<PositionComponent>().y() << std::endl;
 
 
 }
@@ -44,18 +48,21 @@ void App::handleEvents() {
 }
 
 void App::update() {
+	manager.refresh();
 	manager.update();
-	std:: cout << newPlayer.getComponent<PositionComponent>().x() << " " << newPlayer.getComponent<PositionComponent>().x() << std::endl;
+	std:: cout << player1->getComponent<PositionComponent>()->x() << " " << player1->getComponent<PositionComponent>()->y() << std::endl;
 }
 
 void App::render() {
-
+	// map.draw(renderer);
+	manager.render();
+	SDL_RenderPresent(renderer);
 }
 
 
 // constructor
-App::App(): quit(false) {
-
+App::App() {
+	quit = false;
 }
 
 App::~App(void) {

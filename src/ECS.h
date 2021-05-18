@@ -1,3 +1,4 @@
+#pragma once
 #include <iostream>
 #include <vector>
 #include <memory>
@@ -16,7 +17,7 @@ inline ComponentId getComponentTypeId() {
 }
 
 template<typename T> inline ComponentId getComponentTypeId() noexcept {
-	static ComponentId typeId = 0;
+	static ComponentId typeId = getComponentTypeId();
 	return typeId;
 }
 
@@ -81,10 +82,11 @@ public:
 		return *c;
 	} 
 
-	template<typename T> T& getComponent() const
+	template<typename T> T* getComponent() const
 	{
-		auto ptr(componentArray[getComponentTypeId<T>()]);
-		return *static_cast<T*>(ptr);
+		// auto ptr(componentArray[getComponentTypeId<T>()]);
+		// return static_cast<T*>(ptr);
+		return (T*)componentArray[getComponentTypeId<T>()];
 	}
 };
 

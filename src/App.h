@@ -2,7 +2,10 @@
 #include <SDL2/SDL.h>
 
 #include "Map.h"
+#include "TextureManager.h"
 #include "Components.h"
+
+
 
 
 
@@ -30,6 +33,8 @@ private:
 	bool quit;
 	SDL_Window* window;
 	SDL_Renderer* renderer;
+	Manager manager;
+	Entity* player1;
 	
 	
 
