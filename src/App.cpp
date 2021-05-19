@@ -2,6 +2,7 @@
 #include "Map.h"
 #include "TextureManager.h"
 #include "Components.h"
+#include "Network.h"
 
 
 Map map;
@@ -16,7 +17,7 @@ std::vector<CollisionComponent*> colliders;
 
 
 SDL_Event App::event;
-
+Network net("127.0.0.1");
 
 // init sdl
 void App::init() {
@@ -26,10 +27,10 @@ void App::init() {
 	printf("SDL systems initialized\n");
 
 	window = SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_UNDEFINED,
-        SDL_WINDOWPOS_UNDEFINED,
-        SCREEN_WIDTH,
-        SCREEN_HEIGHT,
-        SDL_WINDOW_SHOWN);
+		SDL_WINDOWPOS_UNDEFINED,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
+		SDL_WINDOW_SHOWN);
 	
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
@@ -55,24 +56,42 @@ void App::init() {
 	target2_2->addComponent<Target>("../res/target2.png");
 	
 	player1 = &(manager.addEntity());
-  	player1->addComponent<PositionComponent>(544,384);
-  	player1->addComponent<PlayerComponent>("../res/player1.png");
+	player1->addComponent<PositionComponent>(544,384);
+	player1->addComponent<PlayerComponent>("../res/player1.png");
 	player1->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
-  	player1->addComponent<KeyboardController1>();
-  	player1->addComponent<CollisionComponent>("player1");
+	player1->addComponent<CollisionComponent>("player1");
 	player1->getComponent<Fireball>()->ent->addComponent<CollisionComponent>("Fireball1");
-  	colliders.push_back(player1->getComponent<CollisionComponent>());
+	colliders.push_back(player1->getComponent<CollisionComponent>());
 	colliders.push_back(player1->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
 	
+	
 	player2 = &(manager.addEntity());
-  	player2->addComponent<PositionComponent>(64,64);
-  	player2->addComponent<PlayerComponent>("../res/player2.png");
+	player2->addComponent<PositionComponent>(64,64);
+	player2->addComponent<PlayerComponent>("../res/player2.png");
 	player2->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
-  	player2->addComponent<KeyboardController2>();
-  	player2->addComponent<CollisionComponent>("player2");
+	player2->addComponent<CollisionComponent>("player2");
 	player2->getComponent<Fireball>()->ent->addComponent<CollisionComponent>("Fireball2");
-  	colliders.push_back(player2->getComponent<CollisionComponent>());
+	colliders.push_back(player2->getComponent<CollisionComponent>());
 	colliders.push_back(player2->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
+	
+
+	
+
+	net.recv(player1); 
+	while (player1->getComponent<PlayerComponent>()->id == -1) {}
+	printf("You are online (%d)...waiting for 2nd player\n", player1->getComponent<PlayerComponent>()->id);
+	while (!(player1->getComponent<PlayerComponent>()->isOpponentOnline)) net.recv(player1);
+	printf("Player2 is online\n");
+	
+
+	if (player1->getComponent<PlayerComponent>()->id == 0) {
+		printf("In id keyboard wasd \n");
+		player1->addComponent<KeyboardController1>();
+	}
+	else if (player1->getComponent<PlayerComponent>()->id == 1) {
+		printf("In id keyboard ijkl \n");
+		player2->addComponent<KeyboardController2>();
+	}
 }
 
 void App::handleEvents() {
@@ -81,23 +100,37 @@ void App::handleEvents() {
 
 	switch(event.type) {
 		case SDL_QUIT:
-			setQuit(true);
+		setQuit(true);
 		default:
-			break;
+		break;
+
+	}
+
+	if (player1->getComponent<PlayerComponent>()->id == 1) {
+		// net.recv(player1);
+		if (player2->getComponent<KeyboardController2>()->change) {
+			net.send(player2);
+			printf("here\n");
+		}
+	}
+	else if (player1->getComponent<PlayerComponent>()->id == 0) {
+		net.recv(player2);
+		// if (player1->getComponent<KeyboardController1>()->change) net.send(player1);
 	}
 }
 
 bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
 	// check collisions
 	return (recA.x + recA.w > recB.x) &&
-		   (recB.x + recB.w > recA.x) &&
-		   (recA.y + recA.h > recB.y) &&
-		   (recB.y + recB.h > recA.y);
+	(recB.x + recB.w > recA.x) &&
+	(recA.y + recA.h > recB.y) &&
+	(recB.y + recB.h > recA.y);
 }
 
 void App::update() {
 	manager.refresh();
 	manager.update();
+	
 	CollisionCheck();
 	TargetCheck();
 }

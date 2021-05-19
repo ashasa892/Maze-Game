@@ -22,15 +22,22 @@ Network::~Network() {
 	SDLNet_Quit();
 }
 
-void Network::send(PositionComponent* pos) {
+void Network::send(Entity* player) {
+	PositionComponent* pos = player->getComponent<PositionComponent>();
 	sprintf(tmp, "1 %f %f %d \n", (pos->pos.x), (pos->pos.y), (pos->face_direction));
-	int size = 0, len = strlen(tmp)+1;
-	while (size < len) {
-		size += SDLNet_TCP_Send(connection, tmp+size, len-size);	
-	}
+	
+		printf("in Network send %s", tmp);
+		int size = 0, len = strlen(tmp)+1;
+		while (size < len) {
+			size += SDLNet_TCP_Send(connection, tmp+size, len-size);	
+		}
+	
+	
+	// printf("sent %s\n", tmp);
+
 }
 
-void Network::recv(PositionComponent* pos) {
+void Network::recv(Entity* player) {
 
 	while (SDLNet_CheckSockets(server, 0) > 0 && SDLNet_SocketReady(connection)) {
 		int offset = 0;
@@ -39,9 +46,27 @@ void Network::recv(PositionComponent* pos) {
 			if (offset <= 0) return;
 		} while (tmp[strlen(tmp)-1] != '\n');
 	}
-	int type;
+	if (tmp[0] == '\0') return;
+	int type, id;
 	sscanf(tmp, "%d", &type);
-	if (type == 1) {
-		sscanf(tmp, "1 %f %f %d \n", &(pos->pos.x), &(pos->pos.y), &(pos->face_direction));
+	printf(tmp);
+	if (type == 0) {
+		// printf("id:::: %s \n", tmp);
+		sscanf(tmp, "0 %d \n", &id);
+		player->getComponent<PlayerComponent>()->id = id;
+		if (id==1) {
+			player->getComponent<PlayerComponent>()->isOpponentOnline = true;
+		}
 	}
+	else if (type == 1) {
+		PositionComponent* pos = player->getComponent<PositionComponent>();
+		if (player->getComponent<PlayerComponent>()->isOpponentOnline)
+			sscanf(tmp, "1 %f %f %d \n", &(pos->pos.x), &(pos->pos.y), &(pos->face_direction));
+	}
+	else if (type == 3) {
+		printf("3 came\n");
+		player->getComponent<PlayerComponent>()->isOpponentOnline = true;
+	}
+	tmp[0] = '\0';
+	// printf("received %s\n", tmp);
 }

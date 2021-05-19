@@ -9,15 +9,18 @@ public:
 	PositionComponent *pos;
 	PlayerComponent *player;
 	Fireball *fire;
+	bool change;
 
 	void init() override {
 		pos = entity->getComponent<PositionComponent>();
 		player = entity->getComponent<PlayerComponent>();
 		fire = entity->getComponent<Fireball>();
+		change = false;
 	}
 
 	void update() override {
 		if (App::event.type == SDL_KEYDOWN) {
+			change = true;
 			switch (App::event.key.keysym.sym) {
 				case SDLK_i:
 					pos->face_direction = -1;
@@ -68,23 +71,27 @@ public:
 			}
 		}
 
-		if (App::event.type == SDL_KEYUP) {
+		else if (App::event.type == SDL_KEYUP) {
+			change = true;
 			switch (App::event.key.keysym.sym) {
-				case SDLK_UP:
+				case SDLK_i:
 					pos->velocity.y = 0;
 					break;
-				case SDLK_DOWN:
+				case SDLK_k:
 					pos->velocity.y = 0;
 					break;
-				case SDLK_LEFT:
+				case SDLK_j:
 					pos->velocity.x = 0;
 					break;
-				case SDLK_RIGHT:
+				case SDLK_l:
 					pos->velocity.x = 0;
 					break;
 				default:
 					break;
 			}
+		}
+		else {
+			change = false;
 		}
 	}
 	

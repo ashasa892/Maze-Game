@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
 	//init SDL
 	if ( !app.getQuit() ) app.init();
 
-	Network net("127.0.0.1");
+	
 
 
 	while (!app.getQuit()) {

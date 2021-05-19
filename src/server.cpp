@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
 	char tmp[1400];
 	
 	bool running = true;
-	SDLNet_SocketSet sockets = SDLNet_AllocSocketSet(30);
+	SDLNet_SocketSet sockets = SDLNet_AllocSocketSet(2);
 	TCPsocket server = SDLNet_TCP_Open(&ip);
 
 	if (!server) {
@@ -50,7 +50,7 @@ int main(int argc, char** argv) {
 			}	
 		}
 		
-		if (SDL_GetTicks() >= 60000) running = false;
+		
 
 
 		TCPsocket tmpsocket = SDLNet_TCP_Accept(server);
@@ -59,20 +59,28 @@ int main(int argc, char** argv) {
 		
 		if (tmpsocket) {
 			
-			if (playernum < 30) {
+			if (playernum < 2) {
 				SDLNet_TCP_AddSocket(sockets, tmpsocket);
 				socketvector.push_back(data(tmpsocket, SDL_GetTicks(), curid));
 				sprintf(tmp, "0 %d \n", curid);	
+				std::cout << "New Connection:  " << curid << "\n";
 				curid++;
 				playernum++;
-				std::cout << "New Connection:  " << curid << "\n";
-
 			}
 			else {
-				sprintf(tmp, "3 \n");
+				sprintf(tmp, "4 \n");
+				printf("cannot connect to more clients\n");
 			}
 			SDLNet_TCP_Send(tmpsocket, tmp, strlen(tmp)+1);
+			
+			if (curid == 2) {
+				printf("haha\n");
+				sprintf(tmp, "3 \n");
+				SDLNet_TCP_Send(socketvector[0].socket, tmp, strlen(tmp)+1);
+				curid = -1;
+			}
 		}
+		
 
 		// check for incoming data
 
@@ -82,13 +90,14 @@ int main(int argc, char** argv) {
 				{
 					socketvector[i].timeout = SDL_GetTicks();
 					SDLNet_TCP_Recv(socketvector[i].socket, tmp, 1400);
+					// printf("server received %s \n", tmp);
 					int num = tmp[0]-'0', j=1;
 					while (tmp[j] >= '0' && tmp[j] <= '9') {
 						num *= 10;
 						num += tmp[j] - '0';
 						j++;
 					}
-
+					printf(tmp);
 					if (num == 1) {
 						for (int k=0; k<socketvector.size(); k++)
 						{
@@ -105,7 +114,7 @@ int main(int argc, char** argv) {
 						SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
 						SDLNet_TCP_Close(socketvector[i].socket);
 						socketvector.erase(socketvector.begin()+i);
-						playernum--;
+						// playernum--;
 					}
 				}
 			}

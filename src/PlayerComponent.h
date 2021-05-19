@@ -8,12 +8,16 @@ private:
 	PositionComponent *position;	
 	SDL_Texture *texture;
 	SDL_Rect srcRect, destRect;
+	
 
 public:
+	int id;
+	bool isOpponentOnline;
 	int health = 100;
 	int fireballs = 10;
 	PlayerComponent(const char* fileName) {
 		texture = TextureManager::loadTexture(fileName);
+		id = -1,  isOpponentOnline = false;
 	}
 
 	void init() override {
