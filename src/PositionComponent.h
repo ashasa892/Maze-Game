@@ -8,6 +8,7 @@ public:
 
 	Point2D pos, velocity;
 	int speed = 3;
+	int face_direction = 1; // 1 for down, -1 for up, 2 for right, -2 for left
 
 	PositionComponent() {
 		pos = Point2D();

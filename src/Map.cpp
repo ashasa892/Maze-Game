@@ -15,7 +15,6 @@ void Map::init() {
 	return;
 }
 
-
 void Map::generate(int seed){
 	init();
 	srand(seed);

@@ -10,7 +10,7 @@ public:
 	}
 	static SDL_Renderer* renderer ;
 	static SDL_Texture* loadTexture(const char* fileName);
-	static void render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect srcDest);
+	static void render(SDL_Texture* texture, SDL_Rect srcRect, SDL_Rect destRect);
 
 private:
 	

@@ -22,7 +22,7 @@ public:
 	void update();
 	void render();
 	void initMapTiles();
-	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB);
+	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB); // Axis-Aligned-Bounding-Box, to check collisions
 	
 
 	static SDL_Event event;

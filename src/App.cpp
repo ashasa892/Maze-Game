@@ -1,5 +1,4 @@
 #include "App.h"
-
 #include "Map.h"
 #include "TextureManager.h"
 #include "Components.h"
@@ -9,6 +8,8 @@ Map map;
 Manager manager;
 Entity* player1;
 Entity* player2;
+Entity* fireball1;
+Entity* fireball2;
 std::vector<CollisionComponent*> colliders;
 
 
@@ -38,6 +39,7 @@ void App::init() {
 	player1 = &(manager.addEntity());
   	player1->addComponent<PositionComponent>();
   	player1->addComponent<PlayerComponent>("../res/player1.png");
+	player1->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
   	player1->addComponent<KeyboardController1>();
   	player1->addComponent<CollisionComponent>("player1");
   	colliders.push_back(player1->getComponent<CollisionComponent>());
@@ -45,10 +47,10 @@ void App::init() {
 	player2 = &(manager.addEntity());
   	player2->addComponent<PositionComponent>(100,100);
   	player2->addComponent<PlayerComponent>("../res/player2.png");
+	player2->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
   	player2->addComponent<KeyboardController2>();
   	player2->addComponent<CollisionComponent>("player2");
   	colliders.push_back(player2->getComponent<CollisionComponent>());
-// 
 }
 
 void App::handleEvents() {
@@ -64,6 +66,7 @@ void App::handleEvents() {
 }
 
 bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
+	// check collisions
 	return (recA.x + recA.w > recB.x) &&
 		   (recB.x + recB.w > recA.x) &&
 		   (recA.y + recA.h > recB.y) &&
@@ -74,15 +77,13 @@ void App::update() {
 	manager.refresh();
 	manager.update();
 	int i=0;
-	std::cout << colliders.size() << std::endl;
 	for (auto cc : colliders) {
-		std::cout << i++ << " " << cc->tag << std::endl;
+		//loop through all colliding components to handle collisions
 		if (cc->tag == "player1" || cc->tag == "path") continue;
 		
 		SDL_Rect playerRect = player1->getComponent<CollisionComponent>()->collider;
 
 		if (AABB(playerRect, cc->collider)) {
-			// std::cout << cc->tag << std::endl;
 
 			for (int i=1; i<=3; i++) {
 				SDL_Rect tempRect = playerRect;
@@ -110,25 +111,20 @@ void App::update() {
 					break;
 				}
 			}
-			std::cout << "Player 1 hit " << cc->tag << std::endl;
 			PositionComponent* pos = player1->getComponent<PositionComponent>();
-			// pos->velocity = pos->velocity.scalerMul(-1);
-			// pos->pos = pos->pos.add(pos->velocity.scalerMul(pos->speed));
-			std::cout << "before collision "; pos->pos.print();
 			pos->velocity = Point2D(0,0);
 			pos->pos = Point2D(playerRect.x, playerRect.y);
-			std::cout << "after collision "; pos->pos.print();
 			break;
 		}
 	}
 
-	player1->getComponent<PositionComponent>()->pos.print();
-	player1->getComponent<PositionComponent>()->velocity.print();
+	// player1->getComponent<PositionComponent>()->pos.print();
+	// player1->getComponent<PositionComponent>()->velocity.print();
 	
 }
 
-
 void App::initMapTiles() {
+	// initialize wall and path tiles
 	for (auto x=0; x<xsize; x++) {
 		for (auto y=0; y<ysize; y++) {
 			Entity* tile = &(manager.addEntity());
@@ -148,19 +144,18 @@ void App::initMapTiles() {
 	}
 }
 
-void App::render() {
-	// map.render();	
+void App::render() {	
 	manager.render();
 	SDL_RenderPresent(renderer);
 }
 
-
-// constructor
 App::App() {
+	// constructor
 	quit = false;
 }
 
 App::~App(void) {
+	//destructor
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
