@@ -1,38 +1,36 @@
 #pragma once
-#include "PositionComponent.h"
+#include "CollisionComponent.h"
 #include "TextureManager.h"
 #include <SDL2/SDL.h>
 
-class PlayerComponent : public Component {
+class Target : public Component {
 private:
-	PositionComponent *position;	
 	SDL_Texture *texture;
 	SDL_Rect srcRect, destRect;
 
 public:
-	int health = 100;
-	int fireballs = 10;
-	PlayerComponent(const char* fileName) {
+	PositionComponent *pos;
+	bool active = true;
+	Target(const char* fileName) {
 		texture = TextureManager::loadTexture(fileName);
 	}
 
 	void init() override {
-		position = (entity->getComponent<PositionComponent>());
-		
+		pos = (entity->getComponent<PositionComponent>());
 		srcRect.x = srcRect.y = 0;
 		srcRect.w = srcRect.h = 32;
 		destRect.w = destRect.h = 32;
 	}
 
 	void update() override {
-		destRect.x = position->pos.x;
-		destRect.y = position->pos.y;
-
-
+		destRect.x = pos->pos.x;
+		destRect.y = pos->pos.y;
 	}
 
 	void render() override {
-		TextureManager::render(texture, srcRect, destRect);
+		if(active){
+			TextureManager::render(texture, srcRect, destRect);
+		}
 	}
 
 };

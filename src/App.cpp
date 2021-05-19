@@ -8,8 +8,10 @@ Map map;
 Manager manager;
 Entity* player1;
 Entity* player2;
-Entity* fireball1;
-Entity* fireball2;
+Entity* target1_1;
+Entity* target1_2;
+Entity* target2_1;
+Entity* target2_2;
 std::vector<CollisionComponent*> colliders;
 
 
@@ -37,20 +39,48 @@ void App::init() {
 	initMapTiles();
 	
 	player1 = &(manager.addEntity());
-  	player1->addComponent<PositionComponent>();
+  	player1->addComponent<PositionComponent>(544,384);
   	player1->addComponent<PlayerComponent>("../res/player1.png");
 	player1->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
   	player1->addComponent<KeyboardController1>();
   	player1->addComponent<CollisionComponent>("player1");
+	player1->getComponent<Fireball>()->ent->addComponent<CollisionComponent>("Fireball1");
   	colliders.push_back(player1->getComponent<CollisionComponent>());
+	colliders.push_back(player1->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
 	
 	player2 = &(manager.addEntity());
-  	player2->addComponent<PositionComponent>(100,100);
+  	player2->addComponent<PositionComponent>(64,64);
   	player2->addComponent<PlayerComponent>("../res/player2.png");
 	player2->addComponent<Fireball>("../res/Fireball.png", &(manager.addEntity()));
   	player2->addComponent<KeyboardController2>();
   	player2->addComponent<CollisionComponent>("player2");
+	player2->getComponent<Fireball>()->ent->addComponent<CollisionComponent>("Fireball2");
   	colliders.push_back(player2->getComponent<CollisionComponent>());
+	colliders.push_back(player2->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
+	
+	target1_1 = &(manager.addEntity());
+	target1_1->addComponent<PositionComponent>(32,32);
+	target1_1->addComponent<Target>("../res/target1.png");
+	target1_1->addComponent<CollisionComponent>("Target1_1");
+	colliders.push_back(target1_1->getComponent<CollisionComponent>());
+	
+	target1_2 = &(manager.addEntity());
+	target1_2->addComponent<PositionComponent>(32,64);
+	target1_2->addComponent<Target>("../res/target1.png");
+	target1_2->addComponent<CollisionComponent>("Target1_2");
+	colliders.push_back(target1_2->getComponent<CollisionComponent>());
+	
+	target2_1 = &(manager.addEntity());
+	target2_1->addComponent<PositionComponent>(576,384);
+	target2_1->addComponent<Target>("../res/target2.png");
+	target2_1->addComponent<CollisionComponent>("Target2_1");
+	colliders.push_back(target2_1->getComponent<CollisionComponent>());
+	
+	target2_2 = &(manager.addEntity());
+	target2_2->addComponent<PositionComponent>(576,416);
+	target2_2->addComponent<Target>("../res/target2.png");
+	target2_2->addComponent<CollisionComponent>("Target2_2");
+	colliders.push_back(target2_2->getComponent<CollisionComponent>());
 }
 
 void App::handleEvents() {
@@ -76,51 +106,7 @@ bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
 void App::update() {
 	manager.refresh();
 	manager.update();
-	int i=0;
-	for (auto cc : colliders) {
-		//loop through all colliding components to handle collisions
-		if (cc->tag == "player1" || cc->tag == "path") continue;
-		
-		SDL_Rect playerRect = player1->getComponent<CollisionComponent>()->collider;
-
-		if (AABB(playerRect, cc->collider)) {
-
-			for (int i=1; i<=3; i++) {
-				SDL_Rect tempRect = playerRect;
-				tempRect.x = playerRect.x + i;
-				if (!AABB(tempRect, cc->collider)) {
-					playerRect = tempRect;
-					break;
-				}
-
-				tempRect.x = playerRect.x - i;
-				if (!AABB(tempRect, cc->collider)) {
-					playerRect = tempRect;
-					break;
-				}
-
-				tempRect.y = playerRect.y + i;
-				if (!AABB(tempRect, cc->collider)) {
-					playerRect = tempRect;
-					break;
-				}
-
-				tempRect.y = playerRect.y - i;
-				if (!AABB(tempRect, cc->collider)) {
-					playerRect = tempRect;
-					break;
-				}
-			}
-			PositionComponent* pos = player1->getComponent<PositionComponent>();
-			pos->velocity = Point2D(0,0);
-			pos->pos = Point2D(playerRect.x, playerRect.y);
-			break;
-		}
-	}
-
-	// player1->getComponent<PositionComponent>()->pos.print();
-	// player1->getComponent<PositionComponent>()->velocity.print();
-	
+	CollisionCheck();	
 }
 
 void App::initMapTiles() {
@@ -160,4 +146,122 @@ App::~App(void) {
 	SDL_DestroyRenderer(renderer);
 	SDL_Quit();
 	std::cout << "SDL systems shut down" << std::endl;
+}
+
+void App::CollisionCheck(){
+	int i=0;
+	for (auto cc : colliders) {
+		//loop through all colliding components to handle collisions
+		if (cc->tag == "path") continue;
+		SDL_Rect player1Rect = player1->getComponent<CollisionComponent>()->collider;
+		if (AABB(player1Rect, cc->collider)) {
+			if(cc->tag == "wall" || cc->tag == "player2"){
+				for (int i=1; i<=3; i++) {
+					SDL_Rect tempRect = player1Rect;
+					tempRect.x = player1Rect.x + i;
+					if (!AABB(tempRect, cc->collider)) {
+						player1Rect = tempRect;
+						break;
+					}
+					tempRect.x = player1Rect.x - i;
+					if (!AABB(tempRect, cc->collider)) {
+						player1Rect = tempRect;
+						break;
+					}
+					tempRect.y = player1Rect.y + i;
+					if (!AABB(tempRect, cc->collider)) {
+						player1Rect = tempRect;
+						break;
+					}
+					tempRect.y = player1Rect.y - i;
+					if (!AABB(tempRect, cc->collider)) {
+						player1Rect = tempRect;
+						break;
+					}
+				}
+			}
+			else if(cc->tag == "Fireball1"){
+				if(player1->getComponent<Fireball>()->visible){
+					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 20);
+					player1->getComponent<Fireball>()->visible = false;
+				}
+			}
+			else if(cc->tag == "Fireball2"){
+				if(player2->getComponent<Fireball>()->visible){
+					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 20);
+					player2->getComponent<Fireball>()->visible = false;
+				}
+			}
+			else if(cc->tag == "Target2_1"){
+				if(target2_1->getComponent<Target>()->active){
+					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
+					target2_1->getComponent<Target>()->active = false;
+				}
+			}
+			else if(cc->tag == "Target2_2"){
+				if(target2_2->getComponent<Target>()->active){
+					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
+					target2_2->getComponent<Target>()->active = false;
+				}
+			}
+			PositionComponent* pos = player1->getComponent<PositionComponent>();
+			pos->velocity = Point2D(0,0);
+			pos->pos = Point2D(player1Rect.x, player1Rect.y);
+		}
+		SDL_Rect player2Rect = player2->getComponent<CollisionComponent>()->collider;
+		if (AABB(player2Rect, cc->collider)) {
+			if(cc->tag == "wall" || cc->tag == "player1"){
+				for (int i=1; i<=3; i++) {
+					SDL_Rect tempRect = player2Rect;
+					tempRect.x = player2Rect.x + i;
+					if (!AABB(tempRect, cc->collider)) {
+						player2Rect = tempRect;
+						break;
+					}
+					tempRect.x = player2Rect.x - i;
+					if (!AABB(tempRect, cc->collider)) {
+						player2Rect = tempRect;
+						break;
+					}
+					tempRect.y = player2Rect.y + i;
+					if (!AABB(tempRect, cc->collider)) {
+						player2Rect = tempRect;
+						break;
+					}
+					tempRect.y = player2Rect.y - i;
+					if (!AABB(tempRect, cc->collider)) {
+						player2Rect = tempRect;
+						break;
+					}
+				}
+			}
+			else if(cc->tag == "Fireball1"){
+				if(player1->getComponent<Fireball>()->visible){
+					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 20);
+					player1->getComponent<Fireball>()->visible = false;
+				}
+			}
+			else if(cc->tag == "Fireball2"){
+				if(player2->getComponent<Fireball>()->visible){
+					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 20);
+					player2->getComponent<Fireball>()->visible = false;
+				}
+			}
+			else if(cc->tag == "Target1_1"){
+				if(target1_1->getComponent<Target>()->active){
+					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
+					target1_1->getComponent<Target>()->active = false;
+				}
+			}
+			else if(cc->tag == "Target1_2"){
+				if(target1_2->getComponent<Target>()->active){
+					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
+					target1_2->getComponent<Target>()->active = false;
+				}
+			}
+			PositionComponent* pos = player2->getComponent<PositionComponent>();
+			pos->velocity = Point2D(0,0);
+			pos->pos = Point2D(player2Rect.x, player2Rect.y);
+		}
+	}
 }

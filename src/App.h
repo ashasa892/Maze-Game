@@ -23,6 +23,7 @@ public:
 	void render();
 	void initMapTiles();
 	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB); // Axis-Aligned-Bounding-Box, to check collisions
+	void CollisionCheck();
 	
 
 	static SDL_Event event;
