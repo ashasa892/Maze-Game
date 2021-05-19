@@ -1,5 +1,5 @@
 #pragma once
-#include "PositionComponent.h"
+#include "CollisionComponent.h"
 #include "TextureManager.h"
 #include <SDL2/SDL.h>
 
@@ -12,6 +12,7 @@ public:
 	Entity *ent;
 	PositionComponent *position;
 	PositionComponent *parent_pos;
+	CollisionComponent *collide;
 	bool visible = false;
 	Fireball(const char* fileName, Entity* entity) {
 		texture = TextureManager::loadTexture(fileName);
@@ -29,7 +30,6 @@ public:
 	void update() override {
 		destRect.x = position->pos.x;
 		destRect.y = position->pos.y;
-		position->pos.print();
 	}
 
 	void render() override {
