@@ -176,12 +176,6 @@ void App::CollisionCheck(){
 				pos->velocity = Point2D(0,0);
 				pos->pos = Point2D(player1Rect.x, player1Rect.y);
 			}
-			else if(cc->tag == "Fireball1"){
-				if(player1->getComponent<Fireball>()->visible){
-					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 20);
-					player1->getComponent<Fireball>()->visible = false;
-				}
-			}
 			else if(cc->tag == "Fireball2"){
 				if(player2->getComponent<Fireball>()->visible){
 					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 20);
@@ -225,9 +219,19 @@ void App::CollisionCheck(){
 					player1->getComponent<Fireball>()->visible = false;
 				}
 			}
-			else if(cc->tag == "Fireball2"){
+		}
+		SDL_Rect fire1 = player1->getComponent<Fireball>()->ent->getComponent<CollisionComponent>()->collider;
+		if (AABB(fire1, cc->collider)) {
+			if(cc->tag == "wall"){
+				if(player1->getComponent<Fireball>()->visible){
+					player1->getComponent<Fireball>()->visible = false;
+				}
+			}
+		}
+		SDL_Rect fire2 = player2->getComponent<Fireball>()->ent->getComponent<CollisionComponent>()->collider;
+		if (AABB(fire2, cc->collider)) {
+			if(cc->tag == "wall"){
 				if(player2->getComponent<Fireball>()->visible){
-					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 20);
 					player2->getComponent<Fireball>()->visible = false;
 				}
 			}
