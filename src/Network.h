@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <cstring>
+#include "Components.h"
 
 
 class Network
@@ -16,7 +17,7 @@ public:
 	Network(const char* ip);
 	~Network();
 
-	void send(int xpos, int ypos, int fired);
-	void recv();
+	void send(PositionComponent* pos);
+	void recv(PositionComponent* pos);
 		
 };

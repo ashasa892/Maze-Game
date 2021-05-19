@@ -1,5 +1,5 @@
 CC = g++
-SOURCES = Main.cpp App.cpp Map.cpp TextureManager.cpp 
+SOURCES = Main.cpp App.cpp Map.cpp TextureManager.cpp Network.cpp
 OBJECTS = main
 
 

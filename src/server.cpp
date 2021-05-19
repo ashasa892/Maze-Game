@@ -24,19 +24,41 @@ int main(int argc, char** argv) {
 
 	SDL_Event event;
 	IPaddress ip;
-	SDLNet_ResolveHost(&ip, NULL, 6969);
+	SDLNet_ResolveHost(&ip, NULL, 1234);
 	std::vector<data> socketvector;
 	char tmp[1400];
 	
-	int x=0;
+	bool running = true;
 	SDLNet_SocketSet sockets = SDLNet_AllocSocketSet(30);
 	TCPsocket server = SDLNet_TCP_Open(&ip);
 
-	while (!(std::cin >> x)) {
+	if (!server) {
+		std::cout << "Error in creating server" << std::endl;
+
+	}
+
+	SDL_CreateWindow("server", SDL_WINDOWPOS_UNDEFINED,
+        SDL_WINDOWPOS_UNDEFINED,
+        640,
+        480,
+        SDL_WINDOW_SHOWN);
+	
+	while (running) {
+		while (SDL_PollEvent(&event)) {
+			if (event.type == SDL_QUIT || (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_SPACE)) {
+				running = false;
+			}	
+		}
 		
+		if (SDL_GetTicks() >= 60000) running = false;
+
 
 		TCPsocket tmpsocket = SDLNet_TCP_Accept(server);
+		
+			
+		
 		if (tmpsocket) {
+			
 			if (playernum < 30) {
 				SDLNet_TCP_AddSocket(sockets, tmpsocket);
 				socketvector.push_back(data(tmpsocket, SDL_GetTicks(), curid));
@@ -113,7 +135,7 @@ int main(int argc, char** argv) {
 	SDLNet_FreeSocketSet(sockets);
 	SDLNet_TCP_Close(server);
 	SDLNet_Quit();
-	SDLNet_Quit();
+	SDL_Quit();
 
 
 }
