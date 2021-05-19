@@ -22,19 +22,19 @@ public:
 		if (App::event.type == SDL_KEYDOWN) {
 			change = true;
 			switch (App::event.key.keysym.sym) {
-				case SDLK_i:
+				case SDLK_UP:
 					pos->face_direction = -1;
 					pos->velocity.y = -1;
 					break;
-				case SDLK_k:
+				case SDLK_DOWN:
 					pos->face_direction = 1;
 					pos->velocity.y = 1;
 					break;
-				case SDLK_j:
+				case SDLK_LEFT:
 					pos->face_direction = -2;
 					pos->velocity.x = -1;
 					break;
-				case SDLK_l:
+				case SDLK_RIGHT:
 					pos->face_direction = 2;
 					pos->velocity.x = 1;
 					break;
