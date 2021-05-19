@@ -8,9 +8,10 @@ void Map::init() {
 			MAZE[x][y].block = 0;
 		}
 	}
-	wall = TextureManager::loadTexture("../res/wall.png");
-	path = TextureManager::loadTexture("../res/path.png");
-	srcRect.x = srcRect.y = 0;
+	wall = TextureManager::loadTexture("../res/floor.png");
+	path = TextureManager::loadTexture("../res/floor.png");
+	srcRect.x = 0;
+	srcRect.y = 0;
 	srcRect.w = srcRect.h = destRect.w = destRect.h = RATIO;
 	return;
 }
@@ -25,7 +26,7 @@ void Map::generate(int seed){
 				MAZE[x][y].block = 1;
 			}
 			else if(x == 0 || x == xsize-1 || y == 0 || y == ysize - 1) MAZE[x][y].block = 0;
-			else MAZE[x][y].block = (rand()%7)?1:0;
+			else MAZE[x][y].block = (rand()%5)?1:0;
 		}
 	}
 }

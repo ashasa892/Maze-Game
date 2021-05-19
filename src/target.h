@@ -11,13 +11,14 @@ private:
 public:
 	PositionComponent *pos;
 	bool active = true;
-	Target(const char* fileName) {
+	Target(const char* fileName, int x1 = 0, int y1 = 0) {
 		texture = TextureManager::loadTexture(fileName);
+		srcRect.x = x1;
+		srcRect.y = y1;
 	}
 
 	void init() override {
 		pos = (entity->getComponent<PositionComponent>());
-		srcRect.x = srcRect.y = 0;
 		srcRect.w = srcRect.h = 32;
 		destRect.w = destRect.h = 32;
 	}

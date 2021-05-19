@@ -34,25 +34,25 @@ void App::init() {
 	renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 
 	TextureManager::renderer = renderer;
-	map.generate(1);
+	map.generate(6);
 
 	initMapTiles();
 	
 	target1_1 = &(manager.addEntity());
 	target1_1->addComponent<PositionComponent>(576,32);
-	target1_1->addComponent<Target>("../res/target1.png");
+	target1_1->addComponent<Target>("../res/target1_1.png");
 	
 	target1_2 = &(manager.addEntity());
 	target1_2->addComponent<PositionComponent>(576,416);
-	target1_2->addComponent<Target>("../res/target1.png");
+	target1_2->addComponent<Target>("../res/target1_2.png", 64, 0);
 	
 	target2_1 = &(manager.addEntity());
 	target2_1->addComponent<PositionComponent>(32,32);
-	target2_1->addComponent<Target>("../res/target2.png");
+	target2_1->addComponent<Target>("../res/target2_1.png");
 	
 	target2_2 = &(manager.addEntity());
 	target2_2->addComponent<PositionComponent>(32,416);
-	target2_2->addComponent<Target>("../res/target2.png");
+	target2_2->addComponent<Target>("../res/target2_2.png");
 	
 	player1 = &(manager.addEntity());
   	player1->addComponent<PositionComponent>(544,384);
@@ -109,13 +109,15 @@ void App::initMapTiles() {
 			Entity* tile = &(manager.addEntity());
 			tile->addComponent<PositionComponent>(x*RATIO, y*RATIO);
 			std::string tileType;
+			std::string filePath;
 			if (map.MAZE[x][y].block) {
 				tileType = "path";
+				filePath = ("../res/ice.png");
 			}
 			else {
 				tileType = "wall";
+				filePath = ("../res/water.png");
 			}
-			std::string filePath = ("../res/"+tileType+".png");
 			tile->addComponent<PlayerComponent>(filePath.c_str());
 			tile->addComponent<CollisionComponent>(tileType);
 			if (tileType == "wall") colliders.push_back(tile->getComponent<CollisionComponent>());
