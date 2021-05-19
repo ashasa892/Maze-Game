@@ -79,14 +79,45 @@ void App::update() {
 		std::cout << i++ << " " << cc->tag << std::endl;
 		if (cc->tag == "player1" || cc->tag == "path") continue;
 		
+		SDL_Rect playerRect = player1->getComponent<CollisionComponent>()->collider;
 
-		if (AABB(player1->getComponent<CollisionComponent>()->collider,
-												cc->collider)) {
-			std::cout << cc->tag << std::endl;
+		if (AABB(playerRect, cc->collider)) {
+			// std::cout << cc->tag << std::endl;
+
+			for (int i=1; i<=3; i++) {
+				SDL_Rect tempRect = playerRect;
+				tempRect.x = playerRect.x + i;
+				if (!AABB(tempRect, cc->collider)) {
+					playerRect = tempRect;
+					break;
+				}
+
+				tempRect.x = playerRect.x - i;
+				if (!AABB(tempRect, cc->collider)) {
+					playerRect = tempRect;
+					break;
+				}
+
+				tempRect.y = playerRect.y + i;
+				if (!AABB(tempRect, cc->collider)) {
+					playerRect = tempRect;
+					break;
+				}
+
+				tempRect.y = playerRect.y - i;
+				if (!AABB(tempRect, cc->collider)) {
+					playerRect = tempRect;
+					break;
+				}
+			}
+			std::cout << "Player 1 hit " << cc->tag << std::endl;
 			PositionComponent* pos = player1->getComponent<PositionComponent>();
-			pos->velocity = pos->velocity.scalerMul(-1);
-			pos->pos = pos->pos.add(pos->velocity.scalerMul(pos->speed));
-			std::cout << "Player 1 hit " << cc->tag << std::endl;	
+			// pos->velocity = pos->velocity.scalerMul(-1);
+			// pos->pos = pos->pos.add(pos->velocity.scalerMul(pos->speed));
+			std::cout << "before collision "; pos->pos.print();
+			pos->velocity = Point2D(0,0);
+			pos->pos = Point2D(playerRect.x, playerRect.y);
+			std::cout << "after collision "; pos->pos.print();
 			break;
 		}
 	}
