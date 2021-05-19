@@ -19,19 +19,19 @@ public:
 	void update() override {
 		if (App::event.type == SDL_KEYDOWN) {
 			switch (App::event.key.keysym.sym) {
-				case SDLK_UP:
+				case SDLK_i:
 					pos->face_direction = -1;
 					pos->velocity.y = -1;
 					break;
-				case SDLK_DOWN:
+				case SDLK_k:
 					pos->face_direction = 1;
 					pos->velocity.y = 1;
 					break;
-				case SDLK_LEFT:
+				case SDLK_j:
 					pos->face_direction = -2;
 					pos->velocity.x = -1;
 					break;
-				case SDLK_RIGHT:
+				case SDLK_l:
 					pos->face_direction = 2;
 					pos->velocity.x = 1;
 					break;

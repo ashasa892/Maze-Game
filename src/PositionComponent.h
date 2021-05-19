@@ -20,7 +20,6 @@ public:
 
 	void init() override{
 		velocity = Point2D(0, 0);
-
 	}
 
 

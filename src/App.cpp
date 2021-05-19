@@ -38,6 +38,22 @@ void App::init() {
 
 	initMapTiles();
 	
+	target1_1 = &(manager.addEntity());
+	target1_1->addComponent<PositionComponent>(576,32);
+	target1_1->addComponent<Target>("../res/target1.png");
+	
+	target1_2 = &(manager.addEntity());
+	target1_2->addComponent<PositionComponent>(576,416);
+	target1_2->addComponent<Target>("../res/target1.png");
+	
+	target2_1 = &(manager.addEntity());
+	target2_1->addComponent<PositionComponent>(32,32);
+	target2_1->addComponent<Target>("../res/target2.png");
+	
+	target2_2 = &(manager.addEntity());
+	target2_2->addComponent<PositionComponent>(32,416);
+	target2_2->addComponent<Target>("../res/target2.png");
+	
 	player1 = &(manager.addEntity());
   	player1->addComponent<PositionComponent>(544,384);
   	player1->addComponent<PlayerComponent>("../res/player1.png");
@@ -57,30 +73,6 @@ void App::init() {
 	player2->getComponent<Fireball>()->ent->addComponent<CollisionComponent>("Fireball2");
   	colliders.push_back(player2->getComponent<CollisionComponent>());
 	colliders.push_back(player2->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
-	
-	target1_1 = &(manager.addEntity());
-	target1_1->addComponent<PositionComponent>(32,32);
-	target1_1->addComponent<Target>("../res/target1.png");
-	target1_1->addComponent<CollisionComponent>("Target1_1");
-	colliders.push_back(target1_1->getComponent<CollisionComponent>());
-	
-	target1_2 = &(manager.addEntity());
-	target1_2->addComponent<PositionComponent>(32,64);
-	target1_2->addComponent<Target>("../res/target1.png");
-	target1_2->addComponent<CollisionComponent>("Target1_2");
-	colliders.push_back(target1_2->getComponent<CollisionComponent>());
-	
-	target2_1 = &(manager.addEntity());
-	target2_1->addComponent<PositionComponent>(576,384);
-	target2_1->addComponent<Target>("../res/target2.png");
-	target2_1->addComponent<CollisionComponent>("Target2_1");
-	colliders.push_back(target2_1->getComponent<CollisionComponent>());
-	
-	target2_2 = &(manager.addEntity());
-	target2_2->addComponent<PositionComponent>(576,416);
-	target2_2->addComponent<Target>("../res/target2.png");
-	target2_2->addComponent<CollisionComponent>("Target2_2");
-	colliders.push_back(target2_2->getComponent<CollisionComponent>());
 }
 
 void App::handleEvents() {
@@ -106,7 +98,8 @@ bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
 void App::update() {
 	manager.refresh();
 	manager.update();
-	CollisionCheck();	
+	CollisionCheck();
+	TargetCheck();
 }
 
 void App::initMapTiles() {
@@ -179,6 +172,9 @@ void App::CollisionCheck(){
 						break;
 					}
 				}
+				PositionComponent* pos = player1->getComponent<PositionComponent>();
+				pos->velocity = Point2D(0,0);
+				pos->pos = Point2D(player1Rect.x, player1Rect.y);
 			}
 			else if(cc->tag == "Fireball1"){
 				if(player1->getComponent<Fireball>()->visible){
@@ -192,21 +188,6 @@ void App::CollisionCheck(){
 					player2->getComponent<Fireball>()->visible = false;
 				}
 			}
-			else if(cc->tag == "Target2_1"){
-				if(target2_1->getComponent<Target>()->active){
-					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
-					target2_1->getComponent<Target>()->active = false;
-				}
-			}
-			else if(cc->tag == "Target2_2"){
-				if(target2_2->getComponent<Target>()->active){
-					player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
-					target2_2->getComponent<Target>()->active = false;
-				}
-			}
-			PositionComponent* pos = player1->getComponent<PositionComponent>();
-			pos->velocity = Point2D(0,0);
-			pos->pos = Point2D(player1Rect.x, player1Rect.y);
 		}
 		SDL_Rect player2Rect = player2->getComponent<CollisionComponent>()->collider;
 		if (AABB(player2Rect, cc->collider)) {
@@ -234,6 +215,9 @@ void App::CollisionCheck(){
 						break;
 					}
 				}
+				PositionComponent* pos = player2->getComponent<PositionComponent>();
+				pos->velocity = Point2D(0,0);
+				pos->pos = Point2D(player2Rect.x, player2Rect.y);
 			}
 			else if(cc->tag == "Fireball1"){
 				if(player1->getComponent<Fireball>()->visible){
@@ -247,21 +231,41 @@ void App::CollisionCheck(){
 					player2->getComponent<Fireball>()->visible = false;
 				}
 			}
-			else if(cc->tag == "Target1_1"){
-				if(target1_1->getComponent<Target>()->active){
-					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
-					target1_1->getComponent<Target>()->active = false;
-				}
+		}
+	}
+}
+
+void App::TargetCheck(){
+	int x1 = player1->getComponent<PositionComponent>()->pos.x;	
+	int x2 = player2->getComponent<PositionComponent>()->pos.x;
+	int y1 = player1->getComponent<PositionComponent>()->pos.y;
+	int y2 = player2->getComponent<PositionComponent>()->pos.y;
+	if(32 <= x1 && x1 <= 32 + 32){
+		if(32 <= y1 && y1 <= 32 + 32){
+			if(target2_1->getComponent<Target>()->active){
+				player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
+				target2_1->getComponent<Target>()->active = false;
 			}
-			else if(cc->tag == "Target1_2"){
-				if(target1_2->getComponent<Target>()->active){
-					player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
-					target1_2->getComponent<Target>()->active = false;
-				}
+		}
+		else if(416 <= y1 + 32 && y1 + 32 <= 416 + 32){
+			if(target2_2->getComponent<Target>()->active){
+				player2->getComponent<PlayerComponent>()->health = std::max(0, player2->getComponent<PlayerComponent>()->health - 30);
+				target2_2->getComponent<Target>()->active = false;
 			}
-			PositionComponent* pos = player2->getComponent<PositionComponent>();
-			pos->velocity = Point2D(0,0);
-			pos->pos = Point2D(player2Rect.x, player2Rect.y);
+		}
+	}
+	if(576 <= x2 + 32 && x2 + 32 <= 576 + 32){
+		if(32 <= y2 && y2 <= 32 + 32){
+			if(target1_1->getComponent<Target>()->active){
+				player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
+				target1_1->getComponent<Target>()->active = false;
+			}
+		}
+		else if(416 <= y2 + 32 && y2 + 32 <= 416 + 32){
+			if(target1_2->getComponent<Target>()->active){
+				player1->getComponent<PlayerComponent>()->health = std::max(0, player1->getComponent<PlayerComponent>()->health - 30);
+				target1_2->getComponent<Target>()->active = false;
+			}
 		}
 	}
 }

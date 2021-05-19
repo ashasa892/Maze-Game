@@ -21,7 +21,7 @@ void Map::generate(int seed){
 
 	for (auto x=0; x < xsize; ++x) {
 		for (auto y=0; y < ysize; ++y) {
-			if(((x == 1 || x == 2 || x == 3) && (y == 1 || y == 2 || y == 3)) || ((x == 16 || x == 17 || x == 18) && (y == 11 || y == 12 || y == 13))){
+			if((x == 16 || x == 17 || x == 18 || x == 1 || x == 2 || x == 3) && (y == 1 || y == 2 || y == 3 || y == 11 || y == 12 || y == 13)){
 				MAZE[x][y].block = 1;
 			}
 			else if(x == 0 || x == xsize-1 || y == 0 || y == ysize - 1) MAZE[x][y].block = 0;
