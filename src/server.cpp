@@ -90,14 +90,14 @@ int main(int argc, char** argv) {
 				{
 					socketvector[i].timeout = SDL_GetTicks();
 					SDLNet_TCP_Recv(socketvector[i].socket, tmp, 1400);
-					// printf("server received %s \n", tmp);
+					printf("server received %s from %d \n", tmp, i);
 					int num = tmp[0]-'0', j=1;
 					while (tmp[j] >= '0' && tmp[j] <= '9') {
 						num *= 10;
 						num += tmp[j] - '0';
 						j++;
 					}
-					printf(tmp);
+
 					if (num == 1) {
 						for (int k=0; k<socketvector.size(); k++)
 						{
@@ -114,26 +114,26 @@ int main(int argc, char** argv) {
 						SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
 						SDLNet_TCP_Close(socketvector[i].socket);
 						socketvector.erase(socketvector.begin()+i);
-						// playernum--;
+						playernum--;
 					}
 				}
 			}
 		}
 
 		// disconnect, timeout
-		for (int i=0; i<socketvector.size(); i++) {
-			if (SDL_GetTicks() - socketvector[i].timeout > 5000) {
-				sprintf(tmp, "2 %d", i);
-				for (int j=0; j<socketvector.size(); j++) {
-					if (j==i) continue;
-					SDLNet_TCP_Send(socketvector[j].socket, tmp, strlen(tmp)+1);
-				}
-				SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
-				SDLNet_TCP_Close(socketvector[i].socket);
-				socketvector.erase(socketvector.begin()+i);
-				playernum--;
-			}
-		}
+		// for (int i=0; i<socketvector.size(); i++) {
+		// 	if (SDL_GetTicks() - socketvector[i].timeout > 5000) {
+		// 		sprintf(tmp, "2 %d", i);
+		// 		for (int j=0; j<socketvector.size(); j++) {
+		// 			if (j==i) continue;
+		// 			SDLNet_TCP_Send(socketvector[j].socket, tmp, strlen(tmp)+1);
+		// 		}
+		// 		SDLNet_TCP_DelSocket(sockets, socketvector[i].socket);
+		// 		SDLNet_TCP_Close(socketvector[i].socket);
+		// 		socketvector.erase(socketvector.begin()+i);
+		// 		playernum--;
+		// 	}
+		// }
 
 	}
 

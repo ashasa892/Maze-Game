@@ -82,14 +82,13 @@ void App::init() {
 	printf("You are online (%d)...waiting for 2nd player\n", player1->getComponent<PlayerComponent>()->id);
 	while (!(player1->getComponent<PlayerComponent>()->isOpponentOnline)) net.recv(player1);
 	printf("Player2 is online\n");
-	
+
+
 
 	if (player1->getComponent<PlayerComponent>()->id == 0) {
-		printf("In id keyboard wasd \n");
 		player1->addComponent<KeyboardController1>();
 	}
 	else if (player1->getComponent<PlayerComponent>()->id == 1) {
-		printf("In id keyboard ijkl \n");
 		player2->addComponent<KeyboardController2>();
 	}
 }
@@ -106,17 +105,7 @@ void App::handleEvents() {
 
 	}
 
-	if (player1->getComponent<PlayerComponent>()->id == 1) {
-		// net.recv(player1);
-		if (player2->getComponent<KeyboardController2>()->change) {
-			net.send(player2);
-			printf("here\n");
-		}
-	}
-	else if (player1->getComponent<PlayerComponent>()->id == 0) {
-		net.recv(player2);
-		// if (player1->getComponent<KeyboardController1>()->change) net.send(player1);
-	}
+	
 }
 
 bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
@@ -133,6 +122,15 @@ void App::update() {
 	
 	CollisionCheck();
 	TargetCheck();
+
+	if (player1->getComponent<PlayerComponent>()->id == 1) {
+		net.send(player2);	
+		net.recv(player1);
+	}
+	else if (player1->getComponent<PlayerComponent>()->id == 0) {
+		net.send(player1);
+		net.recv(player2);
+	}
 }
 
 void App::initMapTiles() {

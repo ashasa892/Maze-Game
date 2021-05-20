@@ -74,16 +74,16 @@ public:
 		else if (App::event.type == SDL_KEYUP) {
 			change = true;
 			switch (App::event.key.keysym.sym) {
-				case SDLK_i:
+				case SDLK_UP:
 					pos->velocity.y = 0;
 					break;
-				case SDLK_k:
+				case SDLK_DOWN:
 					pos->velocity.y = 0;
 					break;
-				case SDLK_j:
+				case SDLK_LEFT:
 					pos->velocity.x = 0;
 					break;
-				case SDLK_l:
+				case SDLK_RIGHT:
 					pos->velocity.x = 0;
 					break;
 				default:
