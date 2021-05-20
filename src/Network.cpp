@@ -24,7 +24,7 @@ Network::~Network() {
 
 void Network::send(Entity* player) {
 	PositionComponent* pos = player->getComponent<PositionComponent>();
-	sprintf(tmp, "1 %f %f %d \n", (pos->pos.x), (pos->pos.y), (pos->face_direction));
+	sprintf(tmp, "1 %f %f %d %d \n", (pos->pos.x), (pos->pos.y), (pos->face_direction), player->getComponent<PlayerComponent>()->fired);
 	
 	printf("in Network send %s", tmp);
 	int size = SDLNet_TCP_Send(connection, tmp, strlen(tmp)+1);
@@ -64,7 +64,7 @@ void Network::recv(Entity* player) {
 	}
 	else if (type == 1) {
 		PositionComponent* pos = player->getComponent<PositionComponent>();
-		sscanf(tmp, "1 %f %f %d \n", &(pos->pos.x), &(pos->pos.y), &(pos->face_direction));
+		sscanf(tmp, "1 %f %f %d %d \n", &(pos->pos.x), &(pos->pos.y), &(pos->face_direction), &(player->getComponent<PlayerComponent>()->fired));
 	}
 	else if (type == 3) {
 		printf("3 came\n");

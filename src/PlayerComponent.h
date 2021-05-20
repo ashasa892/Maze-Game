@@ -15,6 +15,7 @@ public:
 	bool isOpponentOnline;
 	int health = 100;
 	int fireballs = 10;
+	int fired;
 	PlayerComponent(const char* fileName, int x1 = 0, int y1 = 0) {
 		texture = TextureManager::loadTexture(fileName);
 
@@ -22,7 +23,7 @@ public:
 
 		srcRect.x = x1;
 		srcRect.y = y1;
-
+		fired = false;
 	}
 
 	void init() override {

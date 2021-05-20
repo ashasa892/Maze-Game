@@ -117,12 +117,6 @@ bool App::AABB(const SDL_Rect& recA, const SDL_Rect& recB) {
 }
 
 void App::update() {
-	manager.refresh();
-	manager.update();
-	
-	CollisionCheck();
-	TargetCheck();
-
 	if (player1->getComponent<PlayerComponent>()->id == 1) {
 		net.send(player2);	
 		net.recv(player1);
@@ -131,6 +125,14 @@ void App::update() {
 		net.send(player1);
 		net.recv(player2);
 	}
+	
+	manager.refresh();
+	manager.update();
+	
+	CollisionCheck();
+	TargetCheck();
+
+	
 }
 
 void App::initMapTiles() {
