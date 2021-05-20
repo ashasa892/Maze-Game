@@ -30,6 +30,34 @@ public:
 	void update() override {
 		destRect.x = position->pos.x;
 		destRect.y = position->pos.y;
+		if (parent_pos->entity->getComponent<PlayerComponent>()->fired) {
+			Fireball *fire = this;
+			parent_pos->entity->getComponent<PlayerComponent>()->fireballs--;
+			fire->visible = true;
+			fire->position->pos.x = fire->parent_pos->pos.x;
+			fire->position->pos.y = fire->parent_pos->pos.y;
+			switch(fire->parent_pos->face_direction){
+				case 1:
+					fire->position->velocity.y = 1;
+					fire->position->velocity.x = 0;
+					break;
+				case 2:
+					fire->position->velocity.y = 0;
+					fire->position->velocity.x = 1;
+					break;
+				case -1:
+					fire->position->velocity.y = -1;
+					fire->position->velocity.x = 0;
+					break;
+				case -2:
+					fire->position->velocity.y = 0;
+					fire->position->velocity.x = -1;
+					break;
+				default:
+					break;
+			}
+			parent_pos->entity->getComponent<PlayerComponent>()->fired = false;
+		}
 	}
 
 	void render() override {
