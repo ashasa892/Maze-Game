@@ -1,0 +1,15 @@
+What we have finish
+1. Successfully created multiplayer (without networking) version of our game 
+2. Created multiplayer with networking but some frames are getting skipped and some minor bugs. 
+3. Movement of player is smooth in networking game but mechanics of fireball is little buggy.
+4. Tried to display the current status of game in last moment of development but we didn't had even a *bit* of luck (sad corona days). In the end, it was buggy also.
+
+What we were not able to accomplish but we wanted
+1. Animation and sound
+2. Some more obstacles
+3. A bug-free playable game ;).
+
+Future of this project if our IIT life permits ;(
+1. Remove bugs.
+2. After game is playable locally, take it to the internet
+3. We want everyone to play it and be happy or sad or maybe no-one ;)
