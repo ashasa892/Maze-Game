@@ -3,7 +3,7 @@ SOURCES = Main.cpp App.cpp Map.cpp TextureManager.cpp Network.cpp
 OBJECTS = main
 
 
-LINKER_FLAGS = -lSDL2 -lSDL2_image `pkg-config --cflags --libs SDL2`
+LINKER_FLAGS = -lSDL2 -lSDL2_image `pkg-config --cflags --libs SDL2` `pkg-config --cflags --libs SDL2_ttf`
 
 all:
 	$(CC) $(SOURCES) $(LINKER_FLAGS) -o $(OBJECTS)

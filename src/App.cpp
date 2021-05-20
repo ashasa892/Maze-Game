@@ -13,6 +13,7 @@ Entity* target1_1;
 Entity* target1_2;
 Entity* target2_1;
 Entity* target2_2;
+Entity* display;
 std::vector<CollisionComponent*> colliders;
 
 
@@ -25,7 +26,9 @@ void App::init() {
 		throw "Error while initializing SDL (SRC - init() in App.cpp)";
 	}
 	printf("SDL systems initialized\n");
-
+	
+	TTF_Init();
+	
 	window = SDL_CreateWindow(GAME_NAME, SDL_WINDOWPOS_UNDEFINED,
 		SDL_WINDOWPOS_UNDEFINED,
 		SCREEN_WIDTH,
@@ -74,10 +77,12 @@ void App::init() {
 	colliders.push_back(player2->getComponent<CollisionComponent>());
 	colliders.push_back(player2->getComponent<Fireball>()->ent->getComponent<CollisionComponent>());
 	
-
+	display = &(manager.addEntity());
+	display->addComponent<Text>();
+	display->getComponent<Text>()->player1 = player1->getComponent<PlayerComponent>();
+	display->getComponent<Text>()->player2 = player2->getComponent<PlayerComponent>();
 	
-
-	net.recv(player1); 
+	net.recv(player1);
 	while (player1->getComponent<PlayerComponent>()->id == -1) {}
 	printf("You are online (%d)...waiting for 2nd player\n", player1->getComponent<PlayerComponent>()->id);
 	while (!(player1->getComponent<PlayerComponent>()->isOpponentOnline)) net.recv(player1);

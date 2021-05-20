@@ -9,7 +9,7 @@
 
 #define GAME_NAME "Luffy vs Kaido" 
 #define SCREEN_WIDTH 640 // height of the game window  (change in Map.h)
-#define SCREEN_HEIGHT 480  // width of the game window
+#define SCREEN_HEIGHT 512  // width of the game window
 
 class App 
 {
