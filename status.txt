@@ -11,5 +11,8 @@ What we were not able to accomplish but we wanted
 
 Future of this project if our IIT life permits ;(
 1. Remove bugs.
-2. After game is playable locally, take it to the internet
-3. We want everyone to play it and be happy or sad or maybe no-one ;)
+2. Include more features such as maze shifting, hindered sight, etc.
+3. Change the maze algorithm to make a better maze.
+4. Add more powerups and randomized and invisible containers.
+5. After game is playable locally, take it to the internet
+6. We want everyone to play it and be happy or sad or maybe no-one ;)
